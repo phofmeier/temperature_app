@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:temperature_app/blocs/socket_io.dart';
 import 'package:temperature_app/blocs/temperature_value_bloc.dart';
-import 'package:temperature_app/blocs/bloc_observer.dart';
 import 'package:temperature_app/screens/home.dart';
 
 void main() {

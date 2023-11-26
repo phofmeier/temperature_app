@@ -1,27 +1,36 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:temperature_app/repository/temperature_server_repository.dart';
 
 abstract class TemperatureValueEvent {}
 
-class TemperatureValueChanged extends TemperatureValueEvent {}
+class TemperatureValueChanged extends TemperatureValueEvent {
+  var data;
 
-class TemperatureValueState {
-  double value;
+  TemperatureValueChanged(this.data);
+}
 
-  double change;
+class TemperatureValueState extends Equatable {
+  final double value;
 
-  TemperatureValueState({required this.value, required this.change});
-  TemperatureValueState add(double val) {
-    value = value + val;
-    return TemperatureValueState(value: value, change: change);
-  }
+  final double change;
+
+  const TemperatureValueState({required this.value, required this.change});
+
+  @override
+  List<Object?> get props => [value, change];
 }
 
 class TemperatureValueBloc
     extends Bloc<TemperatureValueEvent, TemperatureValueState> {
-  TemperatureValueBloc()
-      : super(TemperatureValueState(value: 2.0, change: 0.7)) {
+  final TemperatureServerRepository temperatureServerRepository;
+  TemperatureValueBloc({required this.temperatureServerRepository})
+      : super(const TemperatureValueState(value: 2.0, change: 0.7)) {
+    temperatureServerRepository.newTempData
+        .listen((event) => add(TemperatureValueChanged(event)));
     on<TemperatureValueChanged>((event, emit) {
-      emit(state.add(1.0));
+      emit(TemperatureValueState(
+          value: event.data[0][1], change: event.data[1][1]));
     });
   }
 }

@@ -30,15 +30,15 @@ class BlocTestButton extends StatelessWidget {
         TextButton(
             onPressed: () => BlocProvider.of<TemperatureValueBloc>(context)
                 .add(TemperatureValueChanged()),
-            child: Text("Increment")),
+            child: const Text("Increment")),
         TextButton(
             onPressed: () => BlocProvider.of<SocketIOBloc>(context)
                 .add(SocketIOConnectEvent()),
-            child: Text("Connect")),
+            child: const Text("Connect")),
         TextButton(
             onPressed: () => BlocProvider.of<SocketIOBloc>(context)
                 .add(SocketIODisconnectEvent()),
-            child: Text("disconnect")),
+            child: const Text("disconnect")),
         Text(
           BlocProvider.of<SocketIOBloc>(context, listen: true).state.toString(),
           style: Theme.of(context).textTheme.bodyLarge,
@@ -130,17 +130,17 @@ class TemperatureGauges extends StatelessWidget {
             DoubleGauge(
               innerValue: 0.0,
               outerValue: tempValue.temp_1,
-              innerScale: Pair(-3, 3),
-              outerScale: Pair(30, 100),
+              innerScale: const Pair(-3, 3),
+              outerScale: const Pair(30, 100),
               unitNameInner: "°C/h",
               unitNameOuter: "°C",
             ),
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
             DoubleGauge(
               innerValue: 0.0,
               outerValue: tempValue.temp_2,
-              innerScale: Pair(-3, 3),
-              outerScale: Pair(30, 100),
+              innerScale: const Pair(-3, 3),
+              outerScale: const Pair(30, 100),
               unitNameInner: "°C/h",
               unitNameOuter: "°C",
             )

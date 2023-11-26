@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socket_io_client/socket_io_client.dart' as socket_io;
@@ -26,7 +24,7 @@ class SocketIODisconnectEvent extends SocketIOEvent {}
 class SocketIOOnConnectEvent extends SocketIOEvent {}
 
 class SocketIOConnectErrorEvent extends SocketIOEvent {
-  final WebSocketException data;
+  final data;
   SocketIOConnectErrorEvent(this.data);
 }
 
@@ -52,10 +50,10 @@ enum SocketIOConnectionStatus {
 class SocketIOState extends Equatable {
   final SocketIOConnectionStatus connectionStatus;
   final String moreInfo;
-  double temp_1;
-  double temp_2;
+  final double temp_1;
+  final double temp_2;
 
-  SocketIOState(this.connectionStatus,
+  const SocketIOState(this.connectionStatus,
       {this.moreInfo = "", this.temp_1 = 0, this.temp_2 = 0});
 
   factory SocketIOState.connected(String moreInfo) {
@@ -64,14 +62,14 @@ class SocketIOState extends Equatable {
   }
 
   factory SocketIOState.disconnected() {
-    return SocketIOState(SocketIOConnectionStatus.disconnected);
+    return const SocketIOState(SocketIOConnectionStatus.disconnected);
   }
 
   SocketIOState newTempData(data) {
-    double temp_1_new = data[0][1];
-    double temp_2_new = data[1][1];
+    double temp1New = data[0][1];
+    double temp2New = data[1][1];
     return SocketIOState(connectionStatus,
-        moreInfo: moreInfo, temp_1: temp_1_new, temp_2: temp_2_new);
+        moreInfo: moreInfo, temp_1: temp1New, temp_2: temp2New);
   }
 
   @override
@@ -81,7 +79,8 @@ class SocketIOState extends Equatable {
 class SocketIOBloc extends Bloc<SocketIOEvent, SocketIOState> {
   late final socket_io.Socket _socket;
 
-  SocketIOBloc() : super(SocketIOState(SocketIOConnectionStatus.initial)) {
+  SocketIOBloc()
+      : super(const SocketIOState(SocketIOConnectionStatus.initial)) {
     _socket = socket_io.io(
       'http://localhost:5000/js',
       socket_io.OptionBuilder()
@@ -114,8 +113,6 @@ class SocketIOBloc extends Bloc<SocketIOEvent, SocketIOState> {
       emit(SocketIOState.connected("Connecting"));
     });
     on<SocketIOOnConnectEvent>((event, emit) {
-      print("Debug connected received");
-      print(_socket.id);
       emit(SocketIOState.connected(_socket.id!));
     });
     on<SocketIOConnectErrorEvent>((event, emit) {
@@ -134,7 +131,6 @@ class SocketIOBloc extends Bloc<SocketIOEvent, SocketIOState> {
       emit(SocketIOState.connected("JoinedEvent"));
     });
     on<SocketIONewTempDataEvent>((event, emit) {
-      print(event.data);
       emit(state.newTempData(event.data));
     });
   }
@@ -142,34 +138,5 @@ class SocketIOBloc extends Bloc<SocketIOEvent, SocketIOState> {
   Future<void> close() async {
     super.close();
     _socket.dispose();
-  }
-}
-
-class SocketIOConnection {
-  late socket_io.Socket socket;
-  SocketIOConnection() {
-    socket = socket_io.io(
-        'http://localhost:5000',
-        socket_io.OptionBuilder()
-            .setTransports(['websocket']) // for Flutter or Dart VM
-            // .setExtraHeaders({'foo': 'bar'}) // optional
-            .build());
-    socket.onConnect((_) {
-      print('connect');
-      socket.emit('msg', 'test');
-    });
-    socket.onDisconnect((_) => print('disconnect'));
-
-    //  socket.on('event', (data) => print(data));
-    print("done");
-  }
-
-  void changeURL(String newUri) {
-    socket.disconnect();
-    socket = socket_io.io(newUri);
-  }
-
-  void addListener(event, function) {
-    socket.on(event, function);
   }
 }

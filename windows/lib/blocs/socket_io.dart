@@ -68,10 +68,10 @@ class SocketIOState extends Equatable {
   }
 
   SocketIOState newTempData(data) {
-    double temp_1_new = data[0][1];
-    double temp_2_new = data[1][1];
+    double temp1New = data[0][1];
+    double temp2New = data[1][1];
     return SocketIOState(connectionStatus,
-        moreInfo: moreInfo, temp_1: temp_1_new, temp_2: temp_2_new);
+        moreInfo: moreInfo, temp_1: temp1New, temp_2: temp2New);
   }
 
   @override
