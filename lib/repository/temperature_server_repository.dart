@@ -15,7 +15,12 @@ class TemperatureServerRepository {
   final _controllerConnectionStatus =
       StreamController<TemperatureServerConnectionStatus>();
   final _controllerNewTempData = StreamController();
-  late final socketIoApi = SocketIOApi(this);
+  late final socketIoApi = SocketIOApi(
+      onConnectCb: connected,
+      connectingCb: connecting,
+      errorCb: error,
+      disconnectedCb: disconnected)
+    ..addSubscription("new_temp_data", sIOnewTempData);
 
 // Streams
   Stream<TemperatureServerConnectionStatus> get status async* {

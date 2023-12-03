@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:temperature_app/screens/home.dart';
+import 'package:temperature_app/widgets/connection_status.dart';
 
 class Settings extends StatelessWidget {
   const Settings({super.key});
@@ -31,16 +32,22 @@ class SettingsHeader extends StatelessWidget {
             "Settings",
             style: Theme.of(context).textTheme.titleLarge,
           ),
-          IconButton(
-            alignment: Alignment.centerRight,
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(
-                context,
-              );
-            },
-            tooltip: "Return",
-          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              const ConnectionStatusIcon(),
+              IconButton(
+                alignment: Alignment.centerRight,
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.pop(
+                    context,
+                  );
+                },
+                tooltip: "Return",
+              ),
+            ],
+          )
         ],
       ),
     );

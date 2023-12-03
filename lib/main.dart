@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:temperature_app/blocs/server_connection/server_connection_bloc.dart';
 import 'package:temperature_app/blocs/socket_io.dart';
 import 'package:temperature_app/blocs/temperature_value_bloc.dart';
 import 'package:temperature_app/repository/temperature_server_repository.dart';
@@ -29,6 +30,12 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider<SocketIOBloc>(
             create: (context) => SocketIOBloc()..add(SocketIOConnectEvent()),
+          ),
+          BlocProvider<ServerConnectionBloc>(
+            create: (context) => ServerConnectionBloc(
+              temperatureServerRepository:
+                  RepositoryProvider.of<TemperatureServerRepository>(context),
+            ),
           ),
         ],
         child: MaterialApp(

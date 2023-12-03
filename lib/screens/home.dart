@@ -4,6 +4,7 @@ import 'package:temperature_app/blocs/socket_io.dart';
 import 'package:temperature_app/blocs/temperature_value_bloc.dart';
 import 'package:temperature_app/screens/settings.dart';
 import 'package:temperature_app/utils.dart';
+import 'package:temperature_app/widgets/connection_status.dart';
 import 'package:temperature_app/widgets/gauge.dart';
 import 'package:temperature_app/widgets/line_chart.dart';
 
@@ -93,15 +94,21 @@ class Header extends StatelessWidget {
             "Temperature App",
             style: Theme.of(context).textTheme.titleLarge,
           ),
-          IconButton(
-            alignment: Alignment.centerRight,
-            icon: const Icon(Icons.settings_outlined),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const Settings()),
-              );
-            },
-            tooltip: "Settings",
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              const ConnectionStatusIcon(),
+              IconButton(
+                alignment: Alignment.centerRight,
+                icon: const Icon(Icons.settings_outlined),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const Settings()),
+                  );
+                },
+                tooltip: "Settings",
+              ),
+            ],
           )
         ],
       ),
