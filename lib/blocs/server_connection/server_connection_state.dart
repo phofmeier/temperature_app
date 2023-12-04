@@ -1,8 +1,9 @@
 part of 'server_connection_bloc.dart';
 
 sealed class ServerConnectionState extends Equatable {
-  const ServerConnectionState(this.temperatureServerConnectionStatus);
   final TemperatureServerConnectionStatus temperatureServerConnectionStatus;
+
+  const ServerConnectionState(this.temperatureServerConnectionStatus);
 
   @override
   List<Object> get props => [temperatureServerConnectionStatus];
@@ -10,7 +11,8 @@ sealed class ServerConnectionState extends Equatable {
 
 final class ServerConnectionInitial extends ServerConnectionState {
   const ServerConnectionInitial()
-      : super(TemperatureServerConnectionStatus.initial);
+      : super(const TemperatureServerConnectionStatus(
+            TemperatureServerConnectionState.initial, ""));
 }
 
 final class ServerConnectionChanged extends ServerConnectionState {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:temperature_app/screens/home.dart';
 import 'package:temperature_app/widgets/connection_status.dart';
 
 class Settings extends StatelessWidget {
@@ -61,7 +60,7 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Theme.of(context).colorScheme.background,
-      child: const BlocTestText(),
+      child: const Text("Placeholder Settings"),
     );
   }
 }

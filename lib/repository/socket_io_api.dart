@@ -4,8 +4,8 @@ class SocketIOApi {
   late final socket_io.Socket _socket;
 
   void Function()? onConnectCb;
-  void Function()? connectingCb;
-  void Function()? errorCb;
+  void Function(dynamic)? connectingCb;
+  void Function(dynamic)? errorCb;
   void Function()? disconnectedCb;
 
   SocketIOApi(
@@ -23,11 +23,11 @@ class SocketIOApi {
           .setTransports(['websocket']).build(),
     );
     _socket.onConnect((_) => onConnectCb!());
-    _socket.onConnecting((data) => connectingCb!());
-    _socket.onConnectError((data) => errorCb!());
-    _socket.onConnectTimeout((data) => errorCb!());
+    _socket.onConnecting((data) => connectingCb!(data));
+    _socket.onConnectError((data) => errorCb!(data));
+    _socket.onConnectTimeout((data) => errorCb!(data));
     _socket.onDisconnect((_) => disconnectedCb!());
-    _socket.onError((data) => errorCb!());
+    _socket.onError((data) => errorCb!(data));
   }
 
   void addSubscription(String channel, dynamic Function(dynamic) callback) {

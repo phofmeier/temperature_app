@@ -1,8 +1,20 @@
 import 'dart:async';
 
+import 'package:equatable/equatable.dart';
 import 'package:temperature_app/repository/socket_io_api.dart';
 
-enum TemperatureServerConnectionStatus {
+class TemperatureServerConnectionStatus extends Equatable {
+  final TemperatureServerConnectionState state;
+
+  final dynamic message;
+
+  const TemperatureServerConnectionStatus(this.state, this.message);
+
+  @override
+  List<Object?> get props => [state, message];
+}
+
+enum TemperatureServerConnectionState {
   initial,
   connecting,
   connected,
@@ -38,8 +50,8 @@ class TemperatureServerRepository {
   // Public API
   void connect() {
     socketIoApi.connect();
-    _controllerConnectionStatus
-        .add(TemperatureServerConnectionStatus.connecting);
+    _controllerConnectionStatus.add(const TemperatureServerConnectionStatus(
+        TemperatureServerConnectionState.connecting, ""));
   }
 
   void disconnect() {
@@ -52,23 +64,24 @@ class TemperatureServerRepository {
     _controllerNewTempData.add(data);
   }
 
-  void connecting() {
-    _controllerConnectionStatus
-        .add(TemperatureServerConnectionStatus.connecting);
+  void connecting(message) {
+    _controllerConnectionStatus.add(TemperatureServerConnectionStatus(
+        TemperatureServerConnectionState.connecting, message));
   }
 
   void connected() {
-    _controllerConnectionStatus
-        .add(TemperatureServerConnectionStatus.connected);
+    _controllerConnectionStatus.add(const TemperatureServerConnectionStatus(
+        TemperatureServerConnectionState.connected, ""));
   }
 
   void disconnected() {
-    _controllerConnectionStatus
-        .add(TemperatureServerConnectionStatus.disconnected);
+    _controllerConnectionStatus.add(const TemperatureServerConnectionStatus(
+        TemperatureServerConnectionState.disconnected, ""));
   }
 
-  void error() {
-    _controllerConnectionStatus.add(TemperatureServerConnectionStatus.error);
+  void error(message) {
+    _controllerConnectionStatus.add(TemperatureServerConnectionStatus(
+        TemperatureServerConnectionState.error, message));
   }
 
   void dispose() {

@@ -11,14 +11,17 @@ class ConnectionStatusIcon extends StatelessWidget {
     ServerConnectionState connectionState =
         BlocProvider.of<ServerConnectionBloc>(context, listen: true).state;
     IconData connectionIcon = Icons.not_interested_rounded;
-    if (connectionState.temperatureServerConnectionStatus ==
-        TemperatureServerConnectionStatus.connected) {
+    if (connectionState.temperatureServerConnectionStatus.state ==
+        TemperatureServerConnectionState.connected) {
       connectionIcon = Icons.compare_arrows_rounded;
     }
 
-    return Icon(
-      connectionIcon,
-      semanticLabel: connectionState.temperatureServerConnectionStatus.name,
+    return Tooltip(
+      message:
+          "${connectionState.temperatureServerConnectionStatus.state.name}, ${connectionState.temperatureServerConnectionStatus.message}",
+      child: Icon(
+        connectionIcon,
+      ),
     );
   }
 }

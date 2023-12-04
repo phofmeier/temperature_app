@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:temperature_app/blocs/bloc_observer.dart';
 import 'package:temperature_app/blocs/server_connection/server_connection_bloc.dart';
-import 'package:temperature_app/blocs/socket_io.dart';
 import 'package:temperature_app/blocs/temperature_value_bloc.dart';
 import 'package:temperature_app/repository/temperature_server_repository.dart';
 import 'package:temperature_app/screens/home.dart';
 
 void main() {
-  // Bloc.observer = const TemperatureValueObserver();
-  Bloc.observer = const SocketIOObserver();
+  Bloc.observer = const GlobalBlocObserver();
   runApp(const MyApp());
 }
 
@@ -28,9 +27,6 @@ class MyApp extends StatelessWidget {
                   RepositoryProvider.of<TemperatureServerRepository>(context),
             ),
           ),
-          BlocProvider<SocketIOBloc>(
-            create: (context) => SocketIOBloc()..add(SocketIOConnectEvent()),
-          ),
           BlocProvider<ServerConnectionBloc>(
             create: (context) => ServerConnectionBloc(
               temperatureServerRepository:
@@ -44,7 +40,7 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,
           ),
-          home: const MainBlocPage(),
+          home: const MainPage(),
         ),
       ),
     );

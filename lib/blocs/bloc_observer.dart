@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class TemperatureValueObserver extends BlocObserver {
-  const TemperatureValueObserver();
+class GlobalBlocObserver extends BlocObserver {
+  const GlobalBlocObserver();
 
   @override
   void onChange(BlocBase<dynamic> bloc, Change<dynamic> change) {
