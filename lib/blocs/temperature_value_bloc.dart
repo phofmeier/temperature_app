@@ -5,6 +5,7 @@ import 'package:temperature_app/repository/temperature_server_repository.dart';
 abstract class TemperatureValueEvent {}
 
 class TemperatureValueChanged extends TemperatureValueEvent {
+  // ignore: prefer_typing_uninitialized_variables
   var data;
 
   TemperatureValueChanged(this.data);
