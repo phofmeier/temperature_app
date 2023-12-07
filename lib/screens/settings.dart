@@ -26,6 +26,7 @@ class SettingsHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.all(8.0),
       alignment: Alignment.topCenter,
       color: Theme.of(context).colorScheme.primaryContainer,
       child: Row(

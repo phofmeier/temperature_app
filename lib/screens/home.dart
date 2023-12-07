@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:temperature_app/blocs/temperature_value_bloc.dart';
@@ -30,6 +32,7 @@ class Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.all(8.0),
       alignment: Alignment.topCenter,
       color: Theme.of(context).colorScheme.primaryContainer,
       child: Row(
@@ -70,33 +73,46 @@ class TemperatureGauges extends StatelessWidget {
   Widget build(BuildContext context) {
     var tempValueState =
         BlocProvider.of<TemperatureValueBloc>(context, listen: true).state;
+    double maxGaugeWidth = MediaQuery.of(context).size.height;
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           "Live Temperature",
           style: Theme.of(context).textTheme.bodyLarge,
         ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            DoubleGauge(
-              innerValue: 0.0,
-              outerValue: tempValueState.value,
-              innerScale: const Pair(-3, 3),
-              outerScale: const Pair(30, 100),
-              unitNameInner: "°C/h",
-              unitNameOuter: "°C",
+            Expanded(
+              child: LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  return DoubleGauge(
+                    innerValue: 0.0,
+                    outerValue: tempValueState.value,
+                    innerScale: const Pair(-3, 3),
+                    outerScale: const Pair(30, 100),
+                    unitNameInner: "°C/h",
+                    unitNameOuter: "°C",
+                    width: min(constraints.maxWidth, maxGaugeWidth),
+                  );
+                },
+              ),
             ),
             const SizedBox(width: 20),
-            DoubleGauge(
-              innerValue: tempValueState.value,
-              outerValue: 0.0,
-              innerScale: const Pair(-3, 3),
-              outerScale: const Pair(30, 100),
-              unitNameInner: "°C/h",
-              unitNameOuter: "°C",
-            )
+            Expanded(
+              child: LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  return DoubleGauge(
+                    innerValue: 0.0,
+                    outerValue: tempValueState.value,
+                    innerScale: const Pair(-3, 3),
+                    outerScale: const Pair(30, 100),
+                    unitNameInner: "°C/h",
+                    unitNameOuter: "°C",
+                    width: min(constraints.maxWidth, maxGaugeWidth),
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ],
@@ -109,10 +125,8 @@ class Plot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Row(children: [
-      SizedBox(width: 20),
-      Expanded(child: LineChartTest()),
-      SizedBox(width: 20),
-    ]);
+    return const Expanded(
+      child: LineChartTest(),
+    );
   }
 }

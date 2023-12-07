@@ -25,18 +25,21 @@ class LineChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        CustomPaint(
-          painter: DataPainter(data: data),
-          size: const Size(800, 400),
-        ),
-        CustomPaint(
-          painter: CoordinatePainter(),
-          size: const Size(800, 400),
-        )
-      ],
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          CustomPaint(
+            painter: DataPainter(data: data),
+            size: Size.infinite,
+          ),
+          CustomPaint(
+            painter: CoordinatePainter(),
+            size: Size.infinite,
+          )
+        ],
+      ),
     );
   }
 }

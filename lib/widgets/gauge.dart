@@ -75,6 +75,7 @@ class DoubleGauge extends StatelessWidget {
   Widget build(BuildContext context) {
     int numberTicks = ((outerScale.second - outerScale.first) / 10).round() * 5;
     return Container(
+      padding: const EdgeInsets.all(8.0),
       color: Theme.of(context).colorScheme.background,
       child: Stack(
         alignment: Alignment.bottomCenter,
