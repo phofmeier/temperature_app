@@ -58,6 +58,10 @@ class TemperatureServerRepository {
     socketIoApi.disconnect();
   }
 
+  void setUri(String uri) {
+    socketIoApi.setUri(uri);
+  }
+
   // SocketIO API
 
   void sIOnewTempData(data) {

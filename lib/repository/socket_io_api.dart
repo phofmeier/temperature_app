@@ -1,7 +1,8 @@
 import 'package:socket_io_client/socket_io_client.dart' as socket_io;
 
 class SocketIOApi {
-  late final socket_io.Socket _socket;
+  late socket_io.Socket _socket;
+  String uri = 'http://localhost:5000/js';
 
   void Function()? onConnectCb;
   void Function(dynamic)? connectingCb;
@@ -13,8 +14,12 @@ class SocketIOApi {
       this.connectingCb,
       this.errorCb,
       this.disconnectedCb}) {
+    _initialize();
+  }
+
+  void _initialize() {
     _socket = socket_io.io(
-      'http://localhost:5000/js',
+      uri,
       socket_io.OptionBuilder()
           .setTimeout(3000)
           .setReconnectionDelay(5000)
@@ -40,5 +45,12 @@ class SocketIOApi {
 
   void connect() {
     _socket.connect();
+  }
+
+  void setUri(String uri) {
+    this.uri = uri;
+    disconnect();
+    _socket.dispose();
+    _initialize();
   }
 }
