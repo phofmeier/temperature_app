@@ -7,14 +7,18 @@ sealed class AppSettingsEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class AppSettingsOvenTargetTempChanged extends AppSettingsEvent {
+class AppSettingsUserOvenTargetTempChanged extends AppSettingsEvent {
   final double ovenTargetTemperature;
 
-  const AppSettingsOvenTargetTempChanged(this.ovenTargetTemperature);
+  const AppSettingsUserOvenTargetTempChanged(this.ovenTargetTemperature);
 }
 
-class AppSettingsCoreTargetTempChanged extends AppSettingsEvent {
+class AppSettingsUserCoreTargetTempChanged extends AppSettingsEvent {
   final double coreTargetTemperature;
 
-  const AppSettingsCoreTargetTempChanged(this.coreTargetTemperature);
+  const AppSettingsUserCoreTargetTempChanged(this.coreTargetTemperature);
 }
+
+class AppSettingsServerConnectedEvent extends AppSettingsEvent {}
+
+class AppSettingsServerNotConnectedEvent extends AppSettingsEvent {}

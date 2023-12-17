@@ -1,8 +1,9 @@
 import 'package:socket_io_client/socket_io_client.dart' as socket_io;
+import 'package:temperature_app/gen/submodule/temperature_proto/proto/settings.pb.dart';
 
 class SocketIOApi {
   late socket_io.Socket _socket;
-  String uri = 'http://localhost:5000/js';
+  String uri = 'http://localhost:5000/pb';
 
   void Function()? onConnectCb;
   void Function(dynamic)? connectingCb;
@@ -52,5 +53,13 @@ class SocketIOApi {
     disconnect();
     _socket.dispose();
     _initialize();
+  }
+
+  void getSettings() {
+    _socket.emitWithAck("getSettings", "", ack: (data) {
+      print(data);
+      Settings settingMsg = Settings.fromBuffer(data);
+      print(settingMsg);
+    });
   }
 }

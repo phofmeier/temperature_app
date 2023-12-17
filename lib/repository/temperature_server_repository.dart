@@ -25,7 +25,7 @@ enum TemperatureServerConnectionState {
 
 class TemperatureServerRepository {
   final _controllerConnectionStatus =
-      StreamController<TemperatureServerConnectionStatus>();
+      StreamController<TemperatureServerConnectionStatus>.broadcast();
   final _controllerNewTempData = StreamController();
   late final socketIoApi = SocketIOApi(
       onConnectCb: connected,
@@ -33,6 +33,10 @@ class TemperatureServerRepository {
       errorCb: error,
       disconnectedCb: disconnected)
     ..addSubscription("new_temp_data", sIOnewTempData);
+  TemperatureServerRepository() {
+    _controllerConnectionStatus.add(const TemperatureServerConnectionStatus(
+        TemperatureServerConnectionState.initial, ""));
+  }
 
 // Streams
   Stream<TemperatureServerConnectionStatus> get status async* {
@@ -60,6 +64,10 @@ class TemperatureServerRepository {
 
   void setUri(String uri) {
     socketIoApi.setUri(uri);
+  }
+
+  void getSettings() {
+    socketIoApi.getSettings();
   }
 
   // SocketIO API

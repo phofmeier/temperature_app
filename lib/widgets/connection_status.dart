@@ -25,3 +25,24 @@ class ConnectionStatusIcon extends StatelessWidget {
     );
   }
 }
+
+class SettingSyncIcon extends StatelessWidget {
+  final bool synchronized;
+
+  const SettingSyncIcon({super.key, required this.synchronized});
+
+  @override
+  Widget build(BuildContext context) {
+    IconData connectionIcon = synchronized
+        ? Icons.compare_arrows_rounded
+        : Icons.not_interested_rounded;
+
+    String tooltip_message = synchronized ? "Synchronized" : "Not Synchronized";
+    return Tooltip(
+      message: tooltip_message,
+      child: Icon(
+        connectionIcon,
+      ),
+    );
+  }
+}

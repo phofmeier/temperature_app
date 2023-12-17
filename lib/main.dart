@@ -29,24 +29,23 @@ class MyApp extends StatelessWidget {
                   RepositoryProvider.of<TemperatureServerRepository>(context),
             ),
           ),
-          BlocProvider<ServerConnectionBloc>(
-              create: (context) => ServerConnectionBloc(
-                    temperatureServerRepository:
-                        RepositoryProvider.of<TemperatureServerRepository>(
-                            context),
-                  )),
           BlocProvider<ServerSettingsBloc>(
             create: (context) => ServerSettingsBloc(
-                temperatureServerRepository:
-                    RepositoryProvider.of<TemperatureServerRepository>(
-                        context)),
+              temperatureServerRepository:
+                  RepositoryProvider.of<TemperatureServerRepository>(context),
+            ),
           ),
           BlocProvider<AppSettingsBloc>(
             create: (context) => AppSettingsBloc(
-                // temperatureServerRepository:
-                //     RepositoryProvider.of<TemperatureServerRepository>(
-                //         context),
-                ),
+              temperatureServerRepository:
+                  RepositoryProvider.of<TemperatureServerRepository>(context),
+            ),
+          ),
+          BlocProvider<ServerConnectionBloc>(
+            create: (context) => ServerConnectionBloc(
+              temperatureServerRepository:
+                  RepositoryProvider.of<TemperatureServerRepository>(context),
+            ),
           ),
         ],
         child: MaterialApp(

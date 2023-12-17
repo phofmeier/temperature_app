@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:temperature_app/blocs/app_settings/app_settings_bloc.dart';
 import 'package:temperature_app/blocs/temperature_value_bloc.dart';
 import 'package:temperature_app/screens/settings.dart';
 import 'package:temperature_app/utils.dart';
@@ -73,6 +74,8 @@ class TemperatureGauges extends StatelessWidget {
   Widget build(BuildContext context) {
     var tempValueState =
         BlocProvider.of<TemperatureValueBloc>(context, listen: true).state;
+    var appSettingsState =
+        BlocProvider.of<AppSettingsBloc>(context, listen: true).state;
     double maxGaugeWidth = MediaQuery.of(context).size.height;
     return Column(
       children: [
@@ -86,7 +89,7 @@ class TemperatureGauges extends StatelessWidget {
               child: LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
                   return DoubleGauge(
-                    innerValue: 0.0,
+                    innerValue: appSettingsState.coreTargetTemperature,
                     outerValue: tempValueState.value,
                     innerScale: const Pair(-3, 3),
                     outerScale: const Pair(30, 100),

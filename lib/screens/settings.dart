@@ -128,9 +128,13 @@ class AppSettingOvenTarget extends StatelessWidget {
             FilteringTextInputFormatter.allow(RegExp(r'(^-?\d*\.?\d*)'))
           ],
           onEditingComplete: () {
-            appSettings.add(AppSettingsOvenTargetTempChanged(
+            appSettings.add(AppSettingsUserOvenTargetTempChanged(
                 double.parse(textController.text)));
           },
+        ),
+        trailing: SettingSyncIcon(
+          synchronized:
+              appSettings.state.status == AppSettingsStatus.synchronized,
         ),
       ),
     );
@@ -159,9 +163,13 @@ class AppSettingCoreTarget extends StatelessWidget {
             FilteringTextInputFormatter.allow(RegExp(r'(^-?\d*\.?\d*)'))
           ],
           onEditingComplete: () {
-            appSettings.add(AppSettingsCoreTargetTempChanged(
+            appSettings.add(AppSettingsUserCoreTargetTempChanged(
                 double.parse(textController.text)));
           },
+        ),
+        trailing: SettingSyncIcon(
+          synchronized:
+              appSettings.state.status == AppSettingsStatus.synchronized,
         ),
       ),
     );
