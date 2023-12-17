@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:socket_io_client/socket_io_client.dart' as socket_io;
 import 'package:temperature_app/gen/submodule/temperature_proto/proto/settings.pb.dart';
 
@@ -55,11 +57,9 @@ class SocketIOApi {
     _initialize();
   }
 
-  void getSettings() {
+  void getSettings(StreamController<Settings> outputStream) {
     _socket.emitWithAck("getSettings", "", ack: (data) {
-      print(data);
-      Settings settingMsg = Settings.fromBuffer(data);
-      print(settingMsg);
+      outputStream.add(Settings.fromBuffer(data));
     });
   }
 }

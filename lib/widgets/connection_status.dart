@@ -37,9 +37,9 @@ class SettingSyncIcon extends StatelessWidget {
         ? Icons.compare_arrows_rounded
         : Icons.not_interested_rounded;
 
-    String tooltip_message = synchronized ? "Synchronized" : "Not Synchronized";
+    String tooltipMessage = synchronized ? "Synchronized" : "Not Synchronized";
     return Tooltip(
-      message: tooltip_message,
+      message: tooltipMessage,
       child: Icon(
         connectionIcon,
       ),
