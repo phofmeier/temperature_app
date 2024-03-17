@@ -5,48 +5,64 @@ import 'package:flutter/material.dart';
 
 import '../utils.dart';
 
-class DoubleGaugeTest extends StatefulWidget {
-  const DoubleGaugeTest({
-    super.key,
-  });
+class GaugeSettings {
+  final Pair<double> scale;
+  final String unitName;
+  double? targetVal;
+  double? targetTolLow;
+  double? targetTolHigh;
 
-  @override
-  State<DoubleGaugeTest> createState() => _DoubleGaugeTestState();
-}
+  GaugeSettings(
+      {required this.scale,
+      required this.unitName,
+      this.targetVal,
+      this.targetTolLow,
+      this.targetTolHigh});
 
-class _DoubleGaugeTestState extends State<DoubleGaugeTest> {
-  double _outerValue = 0;
-  double _innerValue = 0;
-
-  void setInnerValue(double newInnerValue) {
-    setState(() {
-      _innerValue = ((_innerValue + 0.5) % 20);
-      // _innerValue = pi / 2.0;
-      // _innerValue = newInnerValue;
-    });
+  double clipColorGrad(double val) {
+    return min(1.0, max(0.5, val));
   }
 
-  void setOuterValue(double newOuterValue) {
-    setState(() {
-      _outerValue = ((_outerValue - 0.5) % 20.0);
-      // _outerValue = newOuterValue;
-    });
-  }
+  SweepGradient getColorGradient() {
+    if (targetVal == null) {
+      return const SweepGradient(
+        colors: [
+          Colors.red,
+          Colors.green,
+          Colors.red,
+        ],
+        stops: [0.5, 0.75, 1.0],
+      );
+    }
+    double targetScaled =
+        (targetVal! - scale.first) / (scale.second - scale.first) / 2.0 + 0.5;
+    double tolLowScaled =
+        ((targetTolLow ?? 0.10) / (scale.second - scale.first)) / 2.0;
+    double tolHighScaled =
+        ((targetTolHigh ?? 0.10) / (scale.second - scale.first)) / 2.0;
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        DoubleGauge(
-          innerValue: _innerValue,
-          outerValue: _outerValue,
-        ),
-        TextButton(
-            onPressed: () {
-              setInnerValue(100);
-              setOuterValue(100);
-            },
-            child: const Text("Press")),
+    return SweepGradient(
+      colors: const [
+        Colors.red,
+        Colors.red,
+        Colors.orange,
+        Colors.green,
+        Colors.green,
+        Colors.green,
+        Colors.orange,
+        Colors.red,
+        Colors.red,
+      ],
+      stops: [
+        0.5,
+        clipColorGrad(targetScaled - 2.0 * tolLowScaled),
+        clipColorGrad(targetScaled - 1.1 * tolLowScaled),
+        clipColorGrad(targetScaled - 0.9 * tolLowScaled),
+        clipColorGrad(targetScaled),
+        clipColorGrad(targetScaled + 0.9 * tolHighScaled),
+        clipColorGrad(targetScaled + 1.1 * tolHighScaled),
+        clipColorGrad(targetScaled + 2.0 * tolHighScaled),
+        1.0,
       ],
     );
   }
@@ -57,23 +73,22 @@ class DoubleGauge extends StatelessWidget {
     super.key,
     required this.innerValue,
     required this.outerValue,
+    required this.innerSettings,
+    required this.outerSettings,
     this.width = 300,
-    this.innerScale = const Pair<double>(0, 20),
-    this.outerScale = const Pair<double>(0, 20),
-    this.unitNameInner = "",
-    this.unitNameOuter = "",
   });
   final double innerValue;
   final double outerValue;
   final double width;
-  final String unitNameInner;
-  final String unitNameOuter;
-  final Pair<double> innerScale;
-  final Pair<double> outerScale;
+  final GaugeSettings innerSettings;
+  final GaugeSettings outerSettings;
 
   @override
   Widget build(BuildContext context) {
-    int numberTicks = ((outerScale.second - outerScale.first) / 10).round() * 5;
+    int numberTicks =
+        ((outerSettings.scale.second - outerSettings.scale.first) / 10)
+                .round() *
+            5;
     return Container(
       padding: const EdgeInsets.all(8.0),
       color: Theme.of(context).colorScheme.background,
@@ -84,22 +99,22 @@ class DoubleGauge extends StatelessWidget {
             gauge: TickedLabeledGauge(
               value: outerValue,
               width: width,
-              scale: outerScale,
+              settings: outerSettings,
               arrowOffsetMultiplier: 0.35,
               numberTicks: numberTicks,
             ),
-            unitName: unitNameOuter,
+            unitName: outerSettings.unitName,
           ),
           ValuedGauge(
             gauge: Gauge(
               value: innerValue,
               width: width * 0.3,
-              scale: innerScale,
+              settings: innerSettings,
               arrowOffsetMultiplier: 0.45,
               // numberTicks: 1,
               // majorTickMultiple: 1,
             ),
-            unitName: unitNameInner,
+            unitName: innerSettings.unitName,
           ),
         ],
       ),
@@ -138,18 +153,19 @@ class GaugeArrowPainter extends CustomPainter {
 }
 
 class GaugeScalePainter extends CustomPainter {
+  final SweepGradient colorGradient;
+  GaugeScalePainter({
+    required this.colorGradient,
+  });
+
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2.0, size.height);
     final widthArc = 0.15 * size.width / 2.0;
     final rect = Rect.fromCircle(
         center: center, radius: (size.width / 2) - widthArc / 2);
-    const gradient = SweepGradient(
-      colors: [Colors.green, Colors.yellow, Colors.red],
-      stops: [0.5, 0.7, 0.9],
-    );
     final paint = Paint()
-      ..shader = gradient.createShader(rect)
+      ..shader = colorGradient.createShader(rect)
       ..strokeWidth = widthArc
       // Use [PaintingStyle.fill] if you want the circle to be filled.
       ..style = PaintingStyle.stroke;
@@ -230,9 +246,10 @@ class GaugeScaleTicksLabelPainter extends CustomPainter {
           style: textStyle,
         );
         TextPainter textPainter = TextPainter(
-            text: textSpan,
-            textDirection: TextDirection.ltr,
-            textAlign: TextAlign.center);
+          text: textSpan,
+          textDirection: TextDirection.ltr,
+          // textAlign: TextAlign.center,
+        );
         textPainter.layout(
           minWidth: 0,
           maxWidth: size.width,
@@ -258,21 +275,25 @@ class GaugeScaleTicksLabelPainter extends CustomPainter {
 }
 
 class Gauge extends StatelessWidget {
-  const Gauge(
-      {super.key,
-      required this.value,
-      required this.width,
-      required this.scale,
-      this.arrowOffsetMultiplier = 1});
+  const Gauge({
+    super.key,
+    required this.value,
+    required this.width,
+    required this.settings,
+    this.arrowOffsetMultiplier = 1,
+  });
   final double value;
   final double width;
   final double arrowOffsetMultiplier;
-  final Pair<double> scale;
+  final GaugeSettings settings;
 
   @override
   Widget build(BuildContext context) {
     final double angle = clampDouble(
-        ((value - scale.first) / (scale.second - scale.first)) * pi - pi / 2.0,
+        ((value - settings.scale.first) /
+                    (settings.scale.second - settings.scale.first)) *
+                pi -
+            pi / 2.0,
         -pi / 2.0,
         pi / 2.0);
 
@@ -280,7 +301,8 @@ class Gauge extends StatelessWidget {
       alignment: Alignment.bottomCenter,
       children: [
         CustomPaint(
-          painter: GaugeScalePainter(),
+          painter:
+              GaugeScalePainter(colorGradient: settings.getColorGradient()),
           size: Size((width), (width) / 2),
         ),
         CustomPaint(
@@ -300,7 +322,7 @@ class TickedLabeledGauge extends Gauge {
     super.key,
     required super.value,
     required super.width,
-    required super.scale,
+    required super.settings,
     super.arrowOffsetMultiplier = 1,
     this.numberTicks = 30,
     this.majorTickMultiple = 5,
@@ -318,7 +340,7 @@ class TickedLabeledGauge extends Gauge {
         Gauge(
           value: value,
           width: width - 6 * ticksLength,
-          scale: scale,
+          settings: settings,
           arrowOffsetMultiplier: arrowOffsetMultiplier,
         ),
         CustomPaint(
@@ -332,7 +354,7 @@ class TickedLabeledGauge extends Gauge {
         CustomPaint(
           painter: GaugeScaleTicksLabelPainter(
               numberTicks: numberTicks,
-              scale: scale,
+              scale: settings.scale,
               majorTickMultiple: majorTickMultiple,
               textStyle: Theme.of(context).textTheme.bodyLarge!),
           size: Size(width, width / 2),
@@ -359,12 +381,15 @@ class ValuedGauge extends StatelessWidget {
       children: [
         gauge,
         Positioned(
-            top: (gauge.arrowOffsetMultiplier * gauge.width / 2.0) +
-                0.15 * gauge.width / 2.0,
+          top: (gauge.arrowOffsetMultiplier * gauge.width / 2.0) +
+              0.15 * gauge.width / 2.0,
+          child: FittedBox(
             child: Text(
               gauge.value.toStringAsPrecision(4) + unitName,
               style: Theme.of(context).textTheme.bodyLarge,
-            ))
+            ),
+          ),
+        )
       ],
     );
   }

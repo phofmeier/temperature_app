@@ -25,36 +25,28 @@ class AppSettingsBloc extends Bloc<AppSettingsEvent, AppSettingsState> {
     });
     // todo add sync to server
     on<AppSettingsUserCoreTargetTempChanged>((event, emit) {
-      emit(AppSettingsState(
+      emit(state.copyWith(
           status: AppSettingsStatus.notSynchronized,
-          ovenTargetTemperature: state.ovenTargetTemperature,
           coreTargetTemperature: event.coreTargetTemperature));
     });
     on<AppSettingsUserOvenTargetTempChanged>((event, emit) {
       // Todo add sync to server
-      emit(AppSettingsState(
+      emit(state.copyWith(
           status: AppSettingsStatus.notSynchronized,
-          ovenTargetTemperature: event.ovenTargetTemperature,
-          coreTargetTemperature: state.coreTargetTemperature));
+          ovenTargetTemperature: event.ovenTargetTemperature));
     });
     on<AppSettingsServerSettingChanged>((event, emit) {
-      emit(AppSettingsState(
+      emit(state.copyWith(
           status: AppSettingsStatus.synchronized,
           ovenTargetTemperature: event.ovenTargetTemperature,
           coreTargetTemperature: event.coreTargetTemperature));
     });
     on<AppSettingsServerConnectedEvent>((event, emit) {
       temperatureServerRepository.triggerGetSettings();
-      emit(AppSettingsState(
-          status: AppSettingsStatus.notSynchronized,
-          ovenTargetTemperature: state.ovenTargetTemperature,
-          coreTargetTemperature: state.coreTargetTemperature));
+      emit(state.copyWith(status: AppSettingsStatus.notSynchronized));
     });
     on<AppSettingsServerNotConnectedEvent>((event, emit) {
-      emit(AppSettingsState(
-          status: AppSettingsStatus.notConnected,
-          ovenTargetTemperature: state.ovenTargetTemperature,
-          coreTargetTemperature: state.coreTargetTemperature));
+      emit(state.copyWith(status: AppSettingsStatus.notConnected));
     });
   }
 }

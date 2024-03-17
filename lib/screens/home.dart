@@ -89,12 +89,20 @@ class TemperatureGauges extends StatelessWidget {
               child: LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
                   return DoubleGauge(
-                    innerValue: appSettingsState.coreTargetTemperature,
+                    innerValue: appSettingsState.ovenTargetTemperature,
                     outerValue: tempValueState.value,
-                    innerScale: const Pair(-3, 3),
-                    outerScale: const Pair(30, 100),
-                    unitNameInner: "°C/h",
-                    unitNameOuter: "°C",
+                    innerSettings: GaugeSettings(
+                        scale: const Pair(-3, 3), unitName: "°C/h"),
+                    outerSettings: GaugeSettings(
+                      scale: Pair(
+                        appSettingsState.ovenMinValue,
+                        appSettingsState.ovenMaxValue,
+                      ),
+                      unitName: "°C",
+                      targetVal: appSettingsState.ovenTargetTemperature,
+                      targetTolHigh: appSettingsState.ovenHighTempTol,
+                      targetTolLow: appSettingsState.ovenLowTempTol,
+                    ),
                     width: min(constraints.maxWidth, maxGaugeWidth),
                   );
                 },
@@ -107,10 +115,17 @@ class TemperatureGauges extends StatelessWidget {
                   return DoubleGauge(
                     innerValue: 0.0,
                     outerValue: tempValueState.value,
-                    innerScale: const Pair(-3, 3),
-                    outerScale: const Pair(30, 100),
-                    unitNameInner: "°C/h",
-                    unitNameOuter: "°C",
+                    innerSettings: GaugeSettings(
+                        scale: const Pair(-3, 3), unitName: "°C/h"),
+                    outerSettings: GaugeSettings(
+                      scale: Pair(
+                        appSettingsState.coreMinValue,
+                        appSettingsState.coreMaxValue,
+                      ),
+                      unitName: "°C",
+                      targetVal: appSettingsState.coreTargetTemperature,
+                      targetTolLow: appSettingsState.coreLowTempTol,
+                    ),
                     width: min(constraints.maxWidth, maxGaugeWidth),
                   );
                 },
