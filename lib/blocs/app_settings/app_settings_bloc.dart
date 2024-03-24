@@ -23,17 +23,19 @@ class AppSettingsBloc extends Bloc<AppSettingsEvent, AppSettingsState> {
         add(AppSettingsServerNotConnectedEvent());
       }
     });
-    // todo add sync to server
     on<AppSettingsUserCoreTargetTempChanged>((event, emit) {
-      emit(state.copyWith(
+      var newState = state.copyWith(
           status: AppSettingsStatus.notSynchronized,
-          coreTargetTemperature: event.coreTargetTemperature));
+          coreTargetTemperature: event.coreTargetTemperature);
+      temperatureServerRepository.setSettings(newState);
+      emit(newState);
     });
     on<AppSettingsUserOvenTargetTempChanged>((event, emit) {
-      // Todo add sync to server
-      emit(state.copyWith(
+      var newState = state.copyWith(
           status: AppSettingsStatus.notSynchronized,
-          ovenTargetTemperature: event.ovenTargetTemperature));
+          ovenTargetTemperature: event.ovenTargetTemperature);
+      temperatureServerRepository.setSettings(newState);
+      emit(newState);
     });
     on<AppSettingsServerSettingChanged>((event, emit) {
       emit(state.copyWith(

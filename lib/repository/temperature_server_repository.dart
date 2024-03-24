@@ -37,7 +37,8 @@ class TemperatureServerRepository {
       connectingCb: connecting,
       errorCb: error,
       disconnectedCb: disconnected)
-    ..addSubscription("new_temp_data", sIOnewTempData);
+    ..addSubscription("new_temp_data", sIOnewTempData)
+    ..addSubscription("newSettings", _newSettingsCallback);
   TemperatureServerConnectionState currentState =
       TemperatureServerConnectionState.initial;
   TemperatureServerRepository() {
@@ -87,6 +88,14 @@ class TemperatureServerRepository {
 
   void triggerGetSettings() {
     socketIoApi.getSettings(_settingsMessageStream);
+  }
+
+  void setSettings(AppSettingsState newSettings) {
+    socketIoApi.setSettings(newSettings);
+  }
+
+  void _newSettingsCallback(data) {
+    _settingsMessageStream.add(Settings.fromBuffer(data));
   }
 
   bool isConnected() {
