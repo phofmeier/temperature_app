@@ -256,12 +256,10 @@ class GaugeScaleTicksLabelPainter extends CustomPainter {
         );
 
         Offset p = center - Offset(cos(angle), sin(angle)) * (radius);
-        Offset textOffset = Offset(
-                textPainter.width / 2.0, textPainter.height / 2.0) -
-            Offset(
-                cos(angle) * textPainter.width / 2,
-                sin(angle) * textPainter.height / 2 -
-                    (0.5 * cos(2.0 * angle) + 0.5) * textPainter.height / 2);
+        Offset textOffset =
+            Offset(textPainter.width / 2.0, textPainter.height / 2.0) -
+                Offset(cos(angle) * textPainter.width / 2.0,
+                    -(0.5 * cos(2.0 * angle) + 0.5) * textPainter.height / 2.0);
 
         textPainter.paint(canvas, p - textOffset);
       }

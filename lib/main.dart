@@ -4,7 +4,6 @@ import 'package:temperature_app/blocs/app_settings/app_settings_bloc.dart';
 import 'package:temperature_app/blocs/bloc_observer.dart';
 import 'package:temperature_app/blocs/server_connection/server_connection_bloc.dart';
 import 'package:temperature_app/blocs/server_settings/server_settings_bloc.dart';
-import 'package:temperature_app/blocs/temperature_value_bloc.dart';
 import 'package:temperature_app/repository/temperature_server_repository.dart';
 import 'package:temperature_app/screens/home.dart';
 
@@ -23,12 +22,6 @@ class MyApp extends StatelessWidget {
       create: (context) => TemperatureServerRepository()..connect(),
       child: MultiBlocProvider(
         providers: [
-          BlocProvider<TemperatureValueBloc>(
-            create: (context) => TemperatureValueBloc(
-              temperatureServerRepository:
-                  RepositoryProvider.of<TemperatureServerRepository>(context),
-            ),
-          ),
           BlocProvider<ServerSettingsBloc>(
             create: (context) => ServerSettingsBloc(
               temperatureServerRepository:

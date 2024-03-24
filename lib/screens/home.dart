@@ -3,7 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:temperature_app/blocs/app_settings/app_settings_bloc.dart';
-import 'package:temperature_app/blocs/temperature_value_bloc.dart';
+import 'package:temperature_app/blocs/temperature_data/temperature_data_bloc.dart';
+import 'package:temperature_app/repository/temperature_server_repository.dart';
 import 'package:temperature_app/screens/settings.dart';
 import 'package:temperature_app/utils.dart';
 import 'package:temperature_app/widgets/connection_status.dart';
@@ -17,12 +18,18 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
-      children: [
-        Header(),
-        TemperatureGauges(),
-        Plot(),
-      ],
+    return BlocProvider<TemperatureDataBloc>(
+      create: (context) => TemperatureDataBloc(
+        temperatureServerRepository:
+            RepositoryProvider.of<TemperatureServerRepository>(context),
+      ),
+      child: const Column(
+        children: [
+          Header(),
+          TemperatureGauges(),
+          Plot(),
+        ],
+      ),
     );
   }
 }
@@ -73,7 +80,7 @@ class TemperatureGauges extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var tempValueState =
-        BlocProvider.of<TemperatureValueBloc>(context, listen: true).state;
+        BlocProvider.of<TemperatureDataBloc>(context, listen: true).state;
     var appSettingsState =
         BlocProvider.of<AppSettingsBloc>(context, listen: true).state;
     double maxGaugeWidth = MediaQuery.of(context).size.height;
@@ -89,8 +96,8 @@ class TemperatureGauges extends StatelessWidget {
               child: LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
                   return DoubleGauge(
-                    innerValue: appSettingsState.ovenTargetTemperature,
-                    outerValue: tempValueState.value,
+                    innerValue: tempValueState.currentOvenChange,
+                    outerValue: tempValueState.currentOvenTemp,
                     innerSettings: GaugeSettings(
                         scale: const Pair(-3, 3), unitName: "°C/h"),
                     outerSettings: GaugeSettings(
@@ -113,8 +120,8 @@ class TemperatureGauges extends StatelessWidget {
               child: LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
                   return DoubleGauge(
-                    innerValue: 0.0,
-                    outerValue: tempValueState.value,
+                    innerValue: tempValueState.currentCoreChange,
+                    outerValue: tempValueState.currentCoreTemp,
                     innerSettings: GaugeSettings(
                         scale: const Pair(-3, 3), unitName: "°C/h"),
                     outerSettings: GaugeSettings(
