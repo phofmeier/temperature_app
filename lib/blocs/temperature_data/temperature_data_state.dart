@@ -1,6 +1,6 @@
 part of 'temperature_data_bloc.dart';
 
-sealed class TemperatureDataState extends Equatable {
+class TemperatureDataState extends Equatable {
   const TemperatureDataState(
     this.currentCoreTemp,
     this.currentOvenTemp,

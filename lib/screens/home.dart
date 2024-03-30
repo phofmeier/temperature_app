@@ -96,10 +96,14 @@ class TemperatureGauges extends StatelessWidget {
               child: LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
                   return DoubleGauge(
-                    innerValue: tempValueState.currentOvenChange,
+                    innerValue: tempValueState.currentOvenChange * 60.0,
                     outerValue: tempValueState.currentOvenTemp,
                     innerSettings: GaugeSettings(
-                        scale: const Pair(-3, 3), unitName: "°C/h"),
+                        scale: Pair(
+                          -appSettingsState.tempChangeMaxValue,
+                          appSettingsState.tempChangeMaxValue,
+                        ),
+                        unitName: "°C/min"),
                     outerSettings: GaugeSettings(
                       scale: Pair(
                         appSettingsState.ovenMinValue,
@@ -120,10 +124,14 @@ class TemperatureGauges extends StatelessWidget {
               child: LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
                   return DoubleGauge(
-                    innerValue: tempValueState.currentCoreChange,
+                    innerValue: tempValueState.currentCoreChange * 60.0,
                     outerValue: tempValueState.currentCoreTemp,
                     innerSettings: GaugeSettings(
-                        scale: const Pair(-3, 3), unitName: "°C/h"),
+                        scale: Pair(
+                          -appSettingsState.tempChangeMaxValue,
+                          appSettingsState.tempChangeMaxValue,
+                        ),
+                        unitName: "°C/min"),
                     outerSettings: GaugeSettings(
                       scale: Pair(
                         appSettingsState.coreMinValue,

@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:temperature_app/blocs/app_settings/app_settings_bloc.dart';
+import 'package:temperature_app/blocs/temperature_data/temperature_data_bloc.dart';
 import 'package:temperature_app/gen/submodule/temperature_proto/proto/settings.pb.dart';
+import 'package:temperature_app/gen/submodule/temperature_proto/proto/temperature.pb.dart';
 import 'package:temperature_app/repository/socket_io_api.dart';
 
 class TemperatureServerConnectionStatus extends Equatable {
@@ -28,16 +30,17 @@ enum TemperatureServerConnectionState {
 class TemperatureServerRepository {
   final _controllerConnectionStatus =
       StreamController<TemperatureServerConnectionStatus>.broadcast();
-  final _controllerNewTempData = StreamController();
   final _settingsMessageStream = StreamController<Settings>();
   final _settingsEventStream =
       StreamController<AppSettingsServerSettingChanged>();
+  final _newTemperatureMessageStream =
+      StreamController<NewTemperatureDataReceived>();
   late final socketIoApi = SocketIOApi(
       onConnectCb: connected,
       connectingCb: connecting,
       errorCb: error,
       disconnectedCb: disconnected)
-    ..addSubscription("new_temp_data", sIOnewTempData)
+    ..addSubscription("newCurrentTemperature", sIOnewTempData)
     ..addSubscription("newSettings", _newSettingsCallback);
   TemperatureServerConnectionState currentState =
       TemperatureServerConnectionState.initial;
@@ -64,10 +67,8 @@ class TemperatureServerRepository {
     yield* _settingsEventStream.stream;
   }
 
-  Stream get newTempData async* {
-    // await Future<void>.delayed(const Duration(seconds: 1));
-    // yield TemperatureServerConnectionStatus.initial;
-    yield* _controllerNewTempData.stream;
+  Stream<NewTemperatureDataReceived> get newTemperatureDataReceived async* {
+    yield* _newTemperatureMessageStream.stream;
   }
 
   // Public API
@@ -105,7 +106,13 @@ class TemperatureServerRepository {
   // SocketIO API
 
   void sIOnewTempData(data) {
-    _controllerNewTempData.add(data);
+    CurrentTemperature currentTempMsg = CurrentTemperature.fromBuffer(data);
+    _newTemperatureMessageStream.add(NewTemperatureDataReceived(
+      currentTempMsg.coreTemperature.value,
+      currentTempMsg.ovenTemperature.value,
+      currentTempMsg.coreTemperatureChange,
+      currentTempMsg.ovenTemperatureChange,
+    ));
   }
 
   void connecting(message) {
@@ -134,6 +141,7 @@ class TemperatureServerRepository {
 
   void dispose() {
     _controllerConnectionStatus.close();
-    _controllerNewTempData.close();
+    _settingsEventStream.close();
+    _newTemperatureMessageStream.close();
   }
 }

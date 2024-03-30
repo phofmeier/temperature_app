@@ -22,6 +22,8 @@ class AppSettingsState extends Equatable {
   final double ovenHighTempTol = 10.0;
   final double coreLowTempTol = 5.0;
 
+  final double tempChangeMaxValue = 1.0;
+
   const AppSettingsState({
     required this.status,
     required this.ovenTargetTemperature,

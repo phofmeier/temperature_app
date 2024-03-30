@@ -11,8 +11,16 @@ class TemperatureDataBloc
 
   TemperatureDataBloc({required this.temperatureServerRepository})
       : super(const TemperatureDataInitial()) {
-    on<TemperatureDataEvent>((event, emit) {
-      // TODO: implement event handler
+    temperatureServerRepository.newTemperatureDataReceived.listen((event) {
+      add(event);
+    });
+    on<NewTemperatureDataReceived>((event, emit) {
+      emit(TemperatureDataState(
+        event.currentCoreTemp,
+        event.currentOvenTemp,
+        event.currentCoreChange,
+        event.currentOvenChange,
+      ));
     });
   }
 }
