@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:socket_io_client/socket_io_client.dart' as socket_io;
 import 'package:temperature_app/blocs/app_settings/app_settings_bloc.dart';
@@ -59,8 +60,8 @@ class SocketIOApi {
   }
 
   void getSettings(StreamController<Settings> outputStream) {
-    _socket.emitWithAck("getSettings", "", ack: (data) {
-      outputStream.add(Settings.fromBuffer(data));
+    _socket.emitWithAck("getSettings", "", ack: (ByteBuffer data) {
+      outputStream.add(Settings.fromBuffer(data.asInt8List()));
     });
   }
 

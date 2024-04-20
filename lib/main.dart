@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           title: 'Temperature App',
           theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
             useMaterial3: true,
           ),
           home: const MainPage(),

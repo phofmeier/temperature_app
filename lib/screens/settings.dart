@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:temperature_app/blocs/app_settings/app_settings_bloc.dart';
 import 'package:temperature_app/blocs/server_settings/server_settings_bloc.dart';
+import 'package:temperature_app/utils.dart';
 
 import 'package:temperature_app/widgets/connection_status.dart';
 
@@ -64,16 +65,20 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: ListView(
-        padding: const EdgeInsets.all(8.0),
-        children: [
-          Text("Server", style: Theme.of(context).textTheme.headlineSmall),
-          const ServerUriSetting(),
-          const Divider(),
-          Text("Application", style: Theme.of(context).textTheme.headlineSmall),
-          const AppSettingOvenTarget(),
-          const AppSettingCoreTarget(),
-        ],
+      child: buildWidgetContainer(
+        context,
+        ListView(
+          padding: const EdgeInsets.all(8.0),
+          children: [
+            Text("Server", style: Theme.of(context).textTheme.headlineSmall),
+            const ServerUriSetting(),
+            const Divider(),
+            Text("Application",
+                style: Theme.of(context).textTheme.headlineSmall),
+            const AppSettingOvenTarget(),
+            const AppSettingCoreTarget(),
+          ],
+        ),
       ),
     );
   }

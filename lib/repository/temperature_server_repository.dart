@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:temperature_app/blocs/app_settings/app_settings_bloc.dart';
 import 'package:temperature_app/blocs/temperature_data/temperature_data_bloc.dart';
 import 'package:temperature_app/gen/submodule/temperature_proto/proto/settings.pb.dart';
@@ -96,7 +98,7 @@ class TemperatureServerRepository {
   }
 
   void _newSettingsCallback(data) {
-    _settingsMessageStream.add(Settings.fromBuffer(data));
+    _settingsMessageStream.add(Settings.fromBuffer(convertRawData(data)));
   }
 
   bool isConnected() {
@@ -105,8 +107,16 @@ class TemperatureServerRepository {
 
   // SocketIO API
 
+  dynamic convertRawData(data) {
+    if (kIsWeb) {
+      return data.asInt8List();
+    }
+    return data;
+  }
+
   void sIOnewTempData(data) {
-    CurrentTemperature currentTempMsg = CurrentTemperature.fromBuffer(data);
+    CurrentTemperature currentTempMsg =
+        CurrentTemperature.fromBuffer(convertRawData(data));
     _newTemperatureMessageStream.add(NewTemperatureDataReceived(
       currentTempMsg.coreTemperature.value,
       currentTempMsg.ovenTemperature.value,

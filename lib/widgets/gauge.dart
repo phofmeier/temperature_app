@@ -91,7 +91,7 @@ class DoubleGauge extends StatelessWidget {
             5;
     return Container(
       padding: const EdgeInsets.all(8.0),
-      color: Theme.of(context).colorScheme.background,
+      color: Theme.of(context).colorScheme.primaryContainer,
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: [
@@ -383,7 +383,7 @@ class ValuedGauge extends StatelessWidget {
               0.15 * gauge.width / 2.0,
           child: FittedBox(
             child: Text(
-              gauge.value.toStringAsPrecision(4) + unitName,
+              gauge.value.toStringAsPrecision(3) + unitName,
               style: Theme.of(context).textTheme.bodyLarge,
             ),
           ),
