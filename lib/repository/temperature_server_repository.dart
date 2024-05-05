@@ -1,13 +1,12 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:temperature_app/blocs/app_settings/app_settings_bloc.dart';
 import 'package:temperature_app/blocs/temperature_data/temperature_data_bloc.dart';
 import 'package:temperature_app/gen/submodule/temperature_proto/proto/settings.pb.dart';
 import 'package:temperature_app/gen/submodule/temperature_proto/proto/temperature.pb.dart';
 import 'package:temperature_app/repository/socket_io_api.dart';
+import 'package:temperature_app/utils.dart';
 
 class TemperatureServerConnectionStatus extends Equatable {
   final TemperatureServerConnectionState state;
@@ -52,7 +51,8 @@ class TemperatureServerRepository {
     _settingsMessageStream.stream.listen((event) {
       _settingsEventStream.add(AppSettingsServerSettingChanged(
           ovenTargetTemperature: event.ovenTargetTemperature,
-          coreTargetTemperature: event.coreTargetTemperature));
+          coreTargetTemperature: event.coreTargetTemperature,
+          startTime: event.startTime.toDateTime()));
     });
   }
 
@@ -106,13 +106,6 @@ class TemperatureServerRepository {
   }
 
   // SocketIO API
-
-  dynamic convertRawData(data) {
-    if (kIsWeb) {
-      return data.asInt8List();
-    }
-    return data;
-  }
 
   void sIOnewTempData(data) {
     CurrentTemperature currentTempMsg =

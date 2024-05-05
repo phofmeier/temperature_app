@@ -24,17 +24,29 @@ class AppSettingsUserCoreTargetTempChanged extends AppSettingsEvent {
   List<Object> get props => [coreTargetTemperature];
 }
 
+class AppSettingsUserStartTimeChanged extends AppSettingsEvent {
+  final DateTime startTime;
+
+  const AppSettingsUserStartTimeChanged(this.startTime);
+
+  @override
+  List<Object> get props => [startTime];
+}
+
 class AppSettingsServerSettingChanged extends AppSettingsEvent {
   final double ovenTargetTemperature;
   final double coreTargetTemperature;
+  final DateTime startTime;
 
   const AppSettingsServerSettingChanged({
     required this.ovenTargetTemperature,
     required this.coreTargetTemperature,
+    required this.startTime,
   });
 
   @override
-  List<Object> get props => [ovenTargetTemperature, coreTargetTemperature];
+  List<Object> get props =>
+      [ovenTargetTemperature, coreTargetTemperature, startTime];
 }
 
 class AppSettingsServerConnectedEvent extends AppSettingsEvent {}

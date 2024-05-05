@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class Pair<T> {
@@ -29,4 +30,11 @@ Container buildWidgetContainer(BuildContext context, Widget child) {
     margin: const EdgeInsets.all(8.0),
     child: child,
   );
+}
+
+dynamic convertRawData(data) {
+  if (kIsWeb) {
+    return data.asInt8List();
+  }
+  return data;
 }

@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:temperature_app/blocs/app_settings/app_settings_bloc.dart';
 
 class TimeStates extends StatefulWidget {
   const TimeStates({super.key});
@@ -29,6 +29,9 @@ class _TimeStatesState extends State<TimeStates> {
 
   @override
   Widget build(BuildContext context) {
+    startTime =
+        BlocProvider.of<AppSettingsBloc>(context, listen: true).state.startTime;
+
     return Column(
       children: [
         _buildHeader(),
@@ -62,8 +65,8 @@ class _TimeStatesState extends State<TimeStates> {
       );
     }
     return Column(
-      children: textList,
       crossAxisAlignment: CrossAxisAlignment.end,
+      children: textList,
     );
   }
 
@@ -73,7 +76,7 @@ class _TimeStatesState extends State<TimeStates> {
       _currentTimeString =
           "${now.hour.toString().padLeft(2, "0")}:${now.minute.toString().padLeft(2, "0")}:${now.second.toString().padLeft(2, "0")}";
       _startTimeString =
-          "${startTime.hour.toString().padLeft(2, "0")}:${startTime.minute.toString().padLeft(2, "0")}:${startTime.second.toString().padLeft(2, "0")}";
+          "${startTime.toLocal().hour.toString().padLeft(2, "0")}:${startTime.toLocal().minute.toString().padLeft(2, "0")}:${startTime.toLocal().second.toString().padLeft(2, "0")}";
       Duration runningTime = now.difference(startTime);
       _runningTimeString =
           "${runningTime.inHours.toString().padLeft(2, "0")}:${runningTime.inMinutes.remainder(60).toString().padLeft(2, "0")}:${runningTime.inSeconds.remainder(60).toString().padLeft(2, "0")}";

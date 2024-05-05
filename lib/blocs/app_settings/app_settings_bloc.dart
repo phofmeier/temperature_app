@@ -9,7 +9,7 @@ class AppSettingsBloc extends Bloc<AppSettingsEvent, AppSettingsState> {
   final TemperatureServerRepository temperatureServerRepository;
 
   AppSettingsBloc({required this.temperatureServerRepository})
-      : super(const AppSettingsInitial()) {
+      : super(AppSettingsInitial()) {
     if (temperatureServerRepository.isConnected()) {
       add(AppSettingsServerConnectedEvent());
     }
@@ -37,11 +37,19 @@ class AppSettingsBloc extends Bloc<AppSettingsEvent, AppSettingsState> {
       temperatureServerRepository.setSettings(newState);
       emit(newState);
     });
+    on<AppSettingsUserStartTimeChanged>((event, emit) {
+      var newState = state.copyWith(
+          status: AppSettingsStatus.notSynchronized,
+          startTime: event.startTime);
+      temperatureServerRepository.setSettings(newState);
+      emit(newState);
+    });
     on<AppSettingsServerSettingChanged>((event, emit) {
       emit(state.copyWith(
           status: AppSettingsStatus.synchronized,
           ovenTargetTemperature: event.ovenTargetTemperature,
-          coreTargetTemperature: event.coreTargetTemperature));
+          coreTargetTemperature: event.coreTargetTemperature,
+          startTime: event.startTime));
     });
     on<AppSettingsServerConnectedEvent>((event, emit) {
       temperatureServerRepository.triggerGetSettings();

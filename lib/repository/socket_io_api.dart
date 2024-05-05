@@ -3,7 +3,9 @@ import 'dart:typed_data';
 
 import 'package:socket_io_client/socket_io_client.dart' as socket_io;
 import 'package:temperature_app/blocs/app_settings/app_settings_bloc.dart';
+import 'package:temperature_app/gen/google/protobuf/timestamp.pb.dart';
 import 'package:temperature_app/gen/submodule/temperature_proto/proto/settings.pb.dart';
+import 'package:temperature_app/utils.dart';
 
 class SocketIOApi {
   late socket_io.Socket _socket;
@@ -60,8 +62,8 @@ class SocketIOApi {
   }
 
   void getSettings(StreamController<Settings> outputStream) {
-    _socket.emitWithAck("getSettings", "", ack: (ByteBuffer data) {
-      outputStream.add(Settings.fromBuffer(data.asInt8List()));
+    _socket.emitWithAck("getSettings", "", ack: (data) {
+      outputStream.add(Settings.fromBuffer(convertRawData(data)));
     });
   }
 
@@ -69,6 +71,7 @@ class SocketIOApi {
     Settings settingsMsg = Settings();
     settingsMsg.coreTargetTemperature = newSettings.coreTargetTemperature;
     settingsMsg.ovenTargetTemperature = newSettings.ovenTargetTemperature;
+    settingsMsg.startTime = Timestamp.fromDateTime(newSettings.startTime);
     _socket.emit(
       "setSettings",
       settingsMsg.writeToBuffer(),

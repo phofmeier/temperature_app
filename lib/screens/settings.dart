@@ -77,6 +77,8 @@ class SettingsPage extends StatelessWidget {
                 style: Theme.of(context).textTheme.headlineSmall),
             const AppSettingOvenTarget(),
             const AppSettingCoreTarget(),
+            const Divider(),
+            const AppSettingStartTime(),
           ],
         ),
       ),
@@ -171,6 +173,43 @@ class AppSettingCoreTarget extends StatelessWidget {
             appSettings.add(AppSettingsUserCoreTargetTempChanged(
                 double.parse(textController.text)));
           },
+        ),
+        trailing: SettingSyncIcon(
+          synchronized:
+              appSettings.state.status == AppSettingsStatus.synchronized,
+        ),
+      ),
+    );
+  }
+}
+
+class AppSettingStartTime extends StatelessWidget {
+  const AppSettingStartTime({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    AppSettingsBloc appSettings =
+        BlocProvider.of<AppSettingsBloc>(context, listen: true);
+
+    DateTime localTime = appSettings.state.startTime.toLocal();
+
+    String startTimeString =
+        "${localTime.hour.toString().padLeft(2, "0")}:${localTime.minute.toString().padLeft(2, "0")}:${localTime.second.toString().padLeft(2, "0")}";
+
+    return Card(
+      child: ListTile(
+        leading: const Icon(Icons.watch_later),
+        title: const Text("Start Time"),
+        subtitle: Row(
+          children: [
+            Text(startTimeString),
+            TextButton(
+                onPressed: () {
+                  appSettings
+                      .add(AppSettingsUserStartTimeChanged(DateTime.now()));
+                },
+                child: const Text("Set Start Time Now"))
+          ],
         ),
         trailing: SettingSyncIcon(
           synchronized:

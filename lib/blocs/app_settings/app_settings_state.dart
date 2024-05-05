@@ -13,6 +13,8 @@ class AppSettingsState extends Equatable {
   final double ovenTargetTemperature;
   final double coreTargetTemperature;
 
+  final DateTime startTime;
+
   final double ovenMinValue;
   final double ovenMaxValue;
   final double coreMinValue;
@@ -28,6 +30,7 @@ class AppSettingsState extends Equatable {
     required this.status,
     required this.ovenTargetTemperature,
     required this.coreTargetTemperature,
+    required this.startTime,
     required this.ovenMinValue,
     required this.ovenMaxValue,
     required this.coreMinValue,
@@ -39,6 +42,7 @@ class AppSettingsState extends Equatable {
         status,
         ovenTargetTemperature,
         coreTargetTemperature,
+        startTime,
         ovenMinValue,
         ovenMaxValue,
         coreMinValue,
@@ -49,6 +53,7 @@ class AppSettingsState extends Equatable {
     AppSettingsStatus? status,
     double? ovenTargetTemperature,
     double? coreTargetTemperature,
+    DateTime? startTime,
     double? ovenMinValue,
     double? ovenMaxValue,
     double? coreMinValue,
@@ -60,6 +65,7 @@ class AppSettingsState extends Equatable {
           ovenTargetTemperature ?? this.ovenTargetTemperature,
       coreTargetTemperature:
           coreTargetTemperature ?? this.coreTargetTemperature,
+      startTime: startTime ?? this.startTime,
       ovenMinValue: ovenMinValue ?? this.ovenMinValue,
       ovenMaxValue: ovenMaxValue ?? this.ovenMaxValue,
       coreMinValue: coreMinValue ?? this.coreMinValue,
@@ -69,11 +75,12 @@ class AppSettingsState extends Equatable {
 }
 
 final class AppSettingsInitial extends AppSettingsState {
-  const AppSettingsInitial()
+  AppSettingsInitial()
       : super(
           status: AppSettingsStatus.uninitialized,
           ovenTargetTemperature: 90.0,
           coreTargetTemperature: 75.0,
+          startTime: DateTime.now(),
           ovenMinValue: 20.0,
           ovenMaxValue: 180.0,
           coreMinValue: 10.0,
